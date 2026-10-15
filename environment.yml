@@ -1,0 +1,33 @@
+name: oceanembed-research
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - numpy
+  - pandas
+  - scipy
+  - xarray
+  - netcdf4
+  - h5netcdf
+  - dask
+  - matplotlib
+  - scikit-learn
+  - copernicusmarine
+  - earthaccess
+  - argopy
+  - requests
+  - aiohttp
+  - pytorch
+  - xgboost
+  - shap
+  - ipykernel
+  - jupyterlab
+  - cartopy
+  - cmocean
+  - gsw
+  - zarr
+  - tqdm
+  - pyyaml
+  - pip
+  - pip:
+      - captum

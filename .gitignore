@@ -218,3 +218,19 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# macOS / editor
+.DS_Store
+.vscode/
+
+# Data and large outputs (never commit these)
+data/
+*.nc
+*.zarr
+*.npy
+*.pt
+*.pth
+
+# Secrets
+.env
+*.netrc

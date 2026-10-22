@@ -1,50 +1,77 @@
-"""GLORYS helpers: native 1/12-degree grid -> 0.25-degree target grid and 15 target depths."""
+"""GLORYS thetao -> the 15 target depths on the common 0.25-degree grid, NaN where no honest value exists.
 
+Rules:
+- horizontal: exact 0.25-degree grid points (they are native GLORYS points); no averaging
+- depth: linear interpolation between the two native levels that bracket each target depth
+- a target shallower than the first native level (0 m vs 0.494 m) uses the first level's value
+- if either bracketing level has no data (land or below the seafloor) the result is NaN:
+  never filled, never extrapolated downward
+"""
 import numpy as np
 import xarray as xr
 
-TARGET_DEPTHS = (0, 5, 10, 20, 30, 50, 75, 100, 125, 150, 200, 300, 500, 700, 1000)
-STRIDE = 3  # native 1/12 degree -> every 3rd cell is exactly on the 0.25-degree grid
+from .grid import target_grid
+
+TARGET_DEPTHS = np.array([0, 5, 10, 20, 30, 50, 75, 100, 125, 150, 200, 300, 500, 700, 1000], dtype=float)
 
 
-def to_quarter_degree(da):
-    """Exact selection of every 3rd native cell (no averaging)."""
-    return da.isel(latitude=slice(None, None, STRIDE), longitude=slice(None, None, STRIDE))
+def depth_weights(levels, targets=TARGET_DEPTHS):
+    """Return (i_lo, i_hi, w): result = (1 - w) * level[i_lo] + w * level[i_hi]."""
+    levels = np.asarray(levels, dtype=float)
+    targets = np.asarray(targets, dtype=float)
+    if levels.ndim != 1 or np.any(np.diff(levels) <= 0):
+        raise ValueError("levels must be 1-D and strictly increasing")
+    if targets.max() > levels[-1]:
+        raise ValueError(
+            f"deepest target {targets.max():.0f} m is below the deepest level {levels[-1]:.1f} m; "
+            "download deeper (at least to 1100 m)"
+        )
+    i_hi = np.searchsorted(levels, targets, side="left")
+    i_lo = np.where(levels[i_hi] == targets, i_hi, i_hi - 1)
+    i_lo = np.maximum(i_lo, 0)
+    span = levels[i_hi] - levels[i_lo]
+    w = np.zeros(len(targets))
+    inner = span > 0
+    w[inner] = (targets[inner] - levels[i_lo][inner]) / span[inner]
+    return i_lo, i_hi, w
 
 
-def _bracket(levels, z, extrapolate_top):
-    """Return (k0, k1, w) so that value = (1 - w) * x[k0] + w * x[k1]; None if z is not allowed."""
-    if z > levels[-1]:
-        raise ValueError(f"target depth {z} m is below the deepest level {levels[-1]:.1f} m")
-    k1 = int(np.searchsorted(levels, z, side="left"))  # first native level >= z
-    if k1 == 0:
-        if z == levels[0]:
-            return 0, 0, 0.0
-        if not extrapolate_top:
-            return None
-        k0, k1 = 0, 1  # linear extrapolation upward from the two shallowest levels
-    else:
-        k0 = k1 - 1
-    w = (z - levels[k0]) / (levels[k1] - levels[k0])
-    return k0, k1, float(w)
+def interpolate_depths(arr, levels, targets=TARGET_DEPTHS):
+    """arr: (..., depth, lat, lon), NaN where there is no data. Returns (..., n_targets, lat, lon) float32."""
+    i_lo, i_hi, w = depth_weights(levels, targets)
+    arr = np.asarray(arr, dtype=np.float32)
+    if arr.shape[-3] != len(levels):
+        raise ValueError(f"depth axis has {arr.shape[-3]} entries but {len(levels)} levels were given")
+    lo = np.take(arr, i_lo, axis=-3)
+    hi = np.take(arr, i_hi, axis=-3)
+    w = w.astype(np.float32).reshape(-1, 1, 1)
+    return ((1.0 - w) * lo + w * hi).astype(np.float32)
 
 
-def to_target_depths(da, targets=TARGET_DEPTHS, extrapolate_top=False):
-    """Linear interpolation in depth from native levels to the target depths.
+def glorys_to_target(path, chunk_days=8):
+    """Read a GLORYS thetao file (time, depth, latitude, longitude).
+    Returns (times, array) with array of shape (time, 15, 101, 241), float32, on the target grid."""
+    ds = xr.open_dataset(path)
+    levels = ds["depth"].values.astype("float64")
+    lat, lon = target_grid()
+    # exact selection: raises KeyError if a target point is not on the native grid
+    da = ds["thetao"].sel(latitude=lat, longitude=lon, method="nearest", tolerance=1e-3)
+    da = da.transpose("time", "depth", "latitude", "longitude")
+    times = ds["time"].values
+    n = da.sizes["time"]
+    if n > 1 and not np.all(np.diff(times) == np.timedelta64(1, "D")):
+        raise ValueError("time axis is not consecutive daily steps")
+    out = np.empty((n, len(TARGET_DEPTHS), len(lat), len(lon)), dtype=np.float32)
+    for s in range(0, n, chunk_days):
+        e = min(s + chunk_days, n)
+        out[s:e] = interpolate_depths(da.isel(time=slice(s, e)).values, levels)
+    return times, out
 
-    A target depth is NaN wherever either bracketing native level is NaN (land or seafloor).
-    Call to_quarter_degree first so the arrays stay small. Returns float32, same dim order.
-    """
-    da = da.astype("float32")
-    levels = da["depth"].values.astype("float64")
-    pieces = []
-    for z in targets:
-        br = _bracket(levels, float(z), extrapolate_top)
-        if br is None:
-            v = xr.full_like(da.isel(depth=0, drop=True), np.nan)
-        else:
-            k0, k1, w = br
-            v = (1 - w) * da.isel(depth=k0, drop=True) + w * da.isel(depth=k1, drop=True)
-        pieces.append(v.expand_dims(depth=[np.float32(z)]))
-    out = xr.concat(pieces, dim="depth").astype("float32")
-    return out.transpose(*da.dims)
+
+def static_mask(valid):
+    """valid: (time, depth, lat, lon) boolean. Returns the (depth, lat, lon) mask; raises if it changes."""
+    ref = valid[0]
+    for i in range(1, valid.shape[0]):
+        if not np.array_equal(ref, valid[i]):
+            raise AssertionError(f"validity pattern changes on day index {i}")
+    return ref

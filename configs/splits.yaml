@@ -1,0 +1,6 @@
+# Chronological split, fixed BEFORE any test result is seen. Dates are inclusive.
+# Gaps between parts are at least 30 days; those days are used by no part.
+train:      ["2010-02-04", "2018-12-31"]
+validation: ["2019-02-01", "2020-01-31"]
+test_a:     ["2020-03-02", "2021-06-27"]   # latest data of the delayed-time reanalysis
+test_b:     ["2021-08-01", "END"]          # interim-production target; END = last date available in ALL inputs

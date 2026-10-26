@@ -68,7 +68,7 @@ def download_with_retries(cmd, retries=3, timeout=3600):
     last = ""
     for attempt in range(1, retries + 1):
         try:
-            r = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout)
+            r = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout, stdin=subprocess.DEVNULL)
             if r.returncode == 0:
                 return True, ""
             last = r.stderr[-300:]

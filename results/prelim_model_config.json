@@ -1,0 +1,1 @@
+{"seed": 0, "stride_train": 2, "epochs_max": 25, "batch": 8, "lr": 0.001, "width": 32}

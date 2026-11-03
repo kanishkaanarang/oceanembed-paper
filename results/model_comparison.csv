@@ -1,0 +1,5 @@
+model,pooled_rmse,skill_vs_climatology,skill_vs_regression
+"U-Net, anomaly inputs (SST+SLA)",0.6679,0.5219,0.0857
+"U-Net, anomaly inputs (SST+SLA+winds)",0.6737,0.5135,0.0696
+Linear regression on SLA anomaly,0.6985,0.4771,0.0
+"U-Net, raw inputs (SST+SLA+winds)",0.7753,0.3557,-0.232

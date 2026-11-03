@@ -1,0 +1,7 @@
+variant,pooled_rmse,skill_vs_climatology
+No winds (SST + SLA),0.7727,0.36
+All inputs (SST + SLA + winds),0.7753,0.3557
+No SST (SLA + winds),0.785,0.3395
+SLA only,0.8057,0.3042
+No SLA (SST + winds),0.8878,0.1552
+SST only,0.9113,0.1098

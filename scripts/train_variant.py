@@ -22,7 +22,7 @@ if os.path.exists(OUT):
     raise SystemExit(f"{OUT} already exists - not overwriting")
 os.makedirs("results/variants", exist_ok=True)
 
-SEED, STRIDE_TRAIN, EPOCHS, PATIENCE, BATCH, LR, WIDTH = 0, 2, 25, 6, 8, 1e-3, 32
+SEED, STRIDE_TRAIN, EPOCHS, PATIENCE, BATCH, LR, WIDTH = int(os.environ.get("SEED", "0")), 2, 25, 6, 8, 1e-3, 32
 torch.manual_seed(SEED)
 np.random.seed(SEED)
 dev = torch.device("mps" if torch.backends.mps.is_available() else "cpu")

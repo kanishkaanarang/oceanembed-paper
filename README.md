@@ -1,92 +1,89 @@
-# OceanEmbed: subsurface ocean temperature from satellite surface fields
+# OceanEmbed
 
-**Status: work in progress.** No paper has been submitted. All results below are preliminary and use the
-validation window only; the two test periods have not been opened.
+Estimating daily subsurface ocean temperature (0 to 1000 m) in the North Indian Ocean from surface satellite fields.
 
-## What this is
-Daily temperature at 15 depths (0, 5, 10, 20, 30, 50, 75, 100, 125, 150, 200, 300, 500, 700, 1000 m) over the
-North Indian Ocean (45-105E, 5-30N) on a 0.25 degree grid (101 x 241 = 24,341 cells), estimated from satellite
-surface fields (sea level anomaly, sea surface temperature, winds). The target is the GLORYS12V1 ocean reanalysis,
-which is a model product and not an observation. Independent validation against Argo is planned and not done yet.
+**Status (3 November 2026): research in progress. Not published, not submitted, and no test-period results exist.** A paper for IGARSS 2027 is in preparation (submission planned for late December 2026; acceptance is not guaranteed).
 
-## Preliminary results (validation window 2018-02 to 2020-01, deep-water cells, RMSE in C)
+## The question
 
-| Model | Pooled RMSE | at 100 m |
-|---|---|---|
-| Seasonal climatology (training years) | 0.966 | 1.752 |
-| Linear regression on SLA anomaly | 0.698 | 1.108 |
-| Linear regression on SLA + SST anomalies | 0.674 | 1.104 |
-| U-Net, raw inputs (SST, SLA, winds) | 0.775 | 1.369 |
-| U-Net, anomaly inputs (SST, SLA), mean of 3 seeds | 0.667 (seeds 0.665-0.668) | 1.086 (seed 0) |
+How much of the daily subsurface temperature of the Arabian Sea, the Bay of Bengal and the Andaman Sea can be recovered from variables that satellites observe at the surface, and where does it fail? Models are trained against the GLORYS12 reanalysis and compared with simple baselines under a fixed chronological evaluation.
 
-* Sea level carries most of the skill. A two-input linear regression is almost as good as the small U-Net
-  (about 1 percent difference), and winds add nothing measurable in this setup.
-* Feeding the network raw fields (with their seasonal cycles) made it worse than a linear model; anomaly inputs fixed this.
-* The U-Net's best epoch is chosen on the validation window, so its numbers are slightly optimistic.
+- Domain: 45 to 105 E, 5 to 30 N, 0.25 degree grid (101 x 241 cells)
+- Depths (m): 0, 5, 10, 20, 30, 50, 75, 100, 125, 150, 200, 300, 500, 700, 1000
+- Period: daily, 2010-02-01 to 2025-12-31 (the target starts on 2010-02-04)
+- Caveat: GLORYS is a model reanalysis, so a model trained on it reproduces GLORYS, not necessarily the real ocean.
 
-![model comparison](results/figures/model_comparison_final.png)
+## Data (all from Copernicus Marine)
 
-## Data (all from the Copernicus Marine Service)
-| Role | Product | Version | Native resolution |
+| Role | Product | Version | Processing onto the 0.25 degree grid |
 |---|---|---|---|
-| Target | GLORYS12V1, cmems_mod_glo_phy_my_0.083deg_P1D-m (potential temperature) | 202311 | 1/12 deg, 36 levels |
-| Input | Sea level anomaly, cmems_obs-sl_glo_phy-ssh_my_allsat-l4-duacs-0.125deg_P1D (sla) | 202411 | 0.125 deg |
-| Input | SST, OSTIA reprocessed, METOFFICE-GLO-SST-L4-REP-OBS-SST (analysed_sst) | 202003 | 0.05 deg |
-| Input | Winds, cmems_obs-wind_glo_phy_my_l4_0.125deg_PT1H (hourly, averaged to daily) | 202211 | 0.125 deg |
+| Target | GLORYS12V1, cmems_mod_glo_phy_my_0.083deg_P1D-m | 202311 | exact grid points; linear interpolation in depth to 15 levels |
+| Input | OSTIA reprocessed SST, METOFFICE-GLO-SST-L4-REP-OBS-SST (product SST_GLO_SST_L4_REP_OBSERVATIONS_010_011) | 202003 | exact area-weighted mean, kelvin to Celsius |
+| Input | Sea level anomaly, cmems_obs-sl_glo_phy-ssh_my_allsat-l4-duacs-0.125deg_P1D | 202411 | exact 2 x 2 area mean |
+| Input | Hourly winds, cmems_obs-wind_glo_phy_my_l4_0.125deg_PT1H (product WIND_GLO_PHY_L4_MY_012_006) | 202211 | exact 2 x 2 area mean; daily mean of hourly values |
+| Input | Sea surface salinity | pending | the tested version retires on 24 Nov 2026; a replacement is awaited |
 
-Regridding rules: GLORYS uses every 3rd native cell (exactly on the 0.25 degree grid); the 0.125 and 0.05 degree
-fields use exact area means; depths use linear interpolation between the two bracketing native levels and are
-missing where either level is missing. 5,810 target days (2010-02-04 to 2025-12-31); inputs start 2010-02-01
-(5,813 days) and are paired with targets by calendar date. 12,038 ocean cells at the surface; 9,140 "deep set"
-cells have data at all 15 depths (headline metrics use these); 2,898 shelf cells are reported separately.
-From July 2021 GLORYS is in its interim production stream.
+From July 2021 GLORYS is produced in an interim mode that assimilates near-real-time observations.
 
-## Evaluation protocol (configs/splits.yaml, fixed before modelling)
-| Part | Dates |
-|---|---|
-| Train | 2010-02-04 to 2017-12-31 |
-| Validation | 2018-02-01 to 2020-01-31 |
-| Test A (latest delayed-time reanalysis) | 2020-03-02 to 2021-06-27 |
-| Test B (interim production, reported separately) | 2021-08-01 to end of 2025 |
+## Processing rules
 
-Gaps of at least 30 days between parts. Normalisation, climatology, harmonic fits and regressions use training
-years only. The data module raises an error if a test period is requested; each test set is to be opened once.
+- 0 m uses the shallowest native level (0.494 m). A value is missing wherever either bracketing native level is missing; nothing is filled or extrapolated below the seafloor.
+- One reference land and seafloor mask (15 x 101 x 241). Of 12,038 ocean cells, 9,140 have values at all 15 depths (the "deep set", used for headline metrics); the other cells are shelf and shallow seas, reported separately.
+- Every pipeline task is checked: time axis, grid, value range and mask. Download tasks are resumable.
 
-## Repository layout
-    configs/        splits.yaml (frozen evaluation windows)
-    src/oceanembed/ grid and depth handling, download pipelines, assembly, dataset.py (date-aligned, test periods
-                    unreachable), dataset_anom.py (anomaly inputs)
-    scripts/        run_* (download pipelines), check_* (data checks), climatology_baseline.py,
-                    baseline_sla_regression.py, baseline_sla_sst_regression.py, train_variant.py,
-                    train_variant_anom.py, make_fig_*.py
-    results/        CSV results and figures (results/figures)
-    data/           raw, interim and processed arrays (not in Git)
+## Evaluation protocol (configs/splits.yaml, fixed before any model was trained)
 
-## Reproducing
-    conda env create -f environment.yml
-    conda activate oceanembed-research
-    pip install -e .
+| Part | Period | Use |
+|---|---|---|
+| Train | 2010-02-04 to 2017-12-31 | fit models, normalisation and climatology |
+| Validation | 2018-02-01 to 2020-01-31 | tuning and early stopping |
+| Test A | 2020-03-02 to 2021-06-27 | headline result, to be evaluated once |
+| Test B | 2021-08-01 to the end of the inputs | interim-production target, to be evaluated once |
 
-The download pipelines are monthly, resumable and delete raw files after processing (see the docstrings of
-scripts/run_glorys.py, run_surface.py, run_wind.py, run_sst.py). Copernicus Marine credentials are needed and
-must be kept outside the repository. After the data are assembled:
+Gaps of at least 30 days separate the parts. Statistics come from training years only, and the data module cannot return test days.
 
-    python scripts/check_dataset.py                       # date alignment; reproduces the climatology baseline
-    python scripts/climatology_baseline.py
-    python scripts/baseline_sla_regression.py
-    python scripts/baseline_sla_sst_regression.py
-    python scripts/train_variant_anom.py anom_sst_sla sst,sla
-    SEED=1 python scripts/train_variant_anom.py anom_sst_sla_s1 sst,sla
-    python scripts/make_fig_final_comparison.py
+## Preliminary results (validation window only)
+
+Pooled RMSE over the 15 depths on the deep set; skill = 1 - MSE(model) / MSE(climatology).
+
+| Model | Inputs | RMSE (C) | Skill |
+|---|---|---|---|
+| Seasonal climatology | day of year | 0.966 | 0 |
+| U-Net | raw SST, sea level, winds | 0.775 | +0.356 |
+| Linear regression | sea level anomaly | 0.698 | +0.477 |
+| Linear regression | sea level + SST anomalies | 0.674 | +0.514 |
+| U-Net | SST, sea level, winds (anomalies) | 0.674 | +0.513 |
+| U-Net, 3 seeds (0.668, 0.665, 0.668) | SST + sea level (anomalies) | 0.667 | +0.523 |
+
+The U-Net's best epoch is chosen on the validation window, so its numbers are slightly optimistic, and its edge over the linear regression (about 1%) is within that bias. Test periods have not been used.
 
 ## Limitations
-* The target is a model reanalysis that itself assimilates SST, sea level and Argo; near-surface skill is partly built in.
-* No independent validation yet (Argo planned). Test periods have not been opened.
-* Single-day inputs; one validation window of two years; U-Net epoch selection uses that window.
-* Not a real-time system and not a demo of live output.
 
-## Contact
-Kanishka Narang, B.Tech CSE (AI/ML), Maharaja Agrasen Institute of Technology, New Delhi.
-A paper is in preparation (not yet submitted).
+- The target is a model reanalysis, and no comparison with Argo has been made yet.
+- The salinity input is pending. Gradient-boosted trees and per-depth, regional and seasonal analyses are still to be done.
+- Similar work exists for the tropical Indian Ocean (Qi et al., 2023) and elsewhere (Chae et al., 2026). No claim of novelty is made.
 
-Data: Copernicus Marine Service products listed above; GLORYS12V1 DOI 10.48670/moi-00021.
+## Repository layout
+
+    configs/          frozen evaluation split
+    src/oceanembed/   pipelines, assembly, data module
+    scripts/          run_*.py (downloads), check_*.py (integrity checks), baselines, training, figures
+    results/          small result tables and figures
+    data/             not tracked (raw, interim, processed)
+    environment.yml   environment.lock.yml
+
+## Reproducing
+
+    conda env create -f environment.yml
+    conda activate oceanembed-research
+    pip install -e . --no-deps
+
+Download pipelines (resumable, finished tasks are skipped): scripts/run_glorys.py, run_surface.py, run_wind.py and run_sst.py, followed by the matching check_*.py scripts. A full run transfers hundreds of GB over several days. Copernicus Marine credentials are needed (copernicusmarine login) and are never committed.
+
+## Use of AI tools
+
+Claude (Anthropic) was used for pipeline code, checks and baselines, planning the split and metrics, literature search (every cited paper is verified by the author) and drafting. The author ran and checked the code and is responsible for all claims.
+
+## Licence and citation
+
+To be decided before any release. Not yet citable.

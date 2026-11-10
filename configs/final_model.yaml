@@ -1,0 +1,14 @@
+# FINAL MODEL, frozen on 2026-11-10 BEFORE any test period was opened. Changing anything here after the test periods are opened invalidates the evaluation.
+final_model: "mean of six U-Nets (predictions averaged in anomaly space, scaled by 2.0), added to the training-period harmonic climatology"
+members:
+  - {file: models/final/anom_sst_sla.pt,    seed: 0, inputs: "SST and SLA anomalies, same day, plus ocean mask (3 channels)"}
+  - {file: models/final/anom_sst_sla_s1.pt, seed: 1, inputs: "same as above"}
+  - {file: models/final/anom_sst_sla_s2.pt, seed: 2, inputs: "same as above"}
+  - {file: models/final/anom_lags.pt,       seed: 0, inputs: "SST and SLA anomalies at lags 0, 7, 14, 30 days, plus ocean mask (9 channels)"}
+  - {file: models/final/anom_lags_s1.pt,    seed: 1, inputs: "same as above"}
+  - {file: models/final/anom_lags_s2.pt,    seed: 2, inputs: "same as above"}
+anomalies: "each input minus its own training-period harmonic seasonal cycle (per cell), divided by a training-period standard deviation (src/oceanembed/dataset_anom.py)"
+architecture_and_training: "scripts/train_variant.py (U-Net, width 32, AdamW, early stopping on validation); lagged variant via scripts/train_variant_anom_lags.py"
+ensemble_check: scripts/ensemble_validation.py
+validation_pooled_rmse_deep_set_C: {climatology: 0.966, linear_sla_sst: 0.674, xgboost: 0.670, single_unets: "0.661-0.668", ens_unlagged: 0.6585, ens_lagged: 0.6539, final_ens_all6: 0.6504}
+baselines_to_report_on_test: [climatology, linear_sla, linear_sla_sst, xgboost_no_lags, single_unet_seed0]

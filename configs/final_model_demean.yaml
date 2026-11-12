@@ -1,0 +1,14 @@
+# FROZEN demeaned-sea-level model, 2026-11-12, BEFORE any test period was opened. Co-primary with the frozen ensemble in configs/final_model.yaml (commit 3826a32).
+final_model: "mean of six U-Nets with the daily domain-mean sea level removed from every SLA channel; predictions averaged in anomaly space (x2.0) and added to the training-period climatology"
+pipeline: demean        # src/oceanembed/dataset_demean.py (AnomDemeanData)
+members:
+  - {file: models/final_demean/dm_unlag_s0.pt, seed: 0, lags: [0]}
+  - {file: models/final_demean/dm_unlag_s1.pt, seed: 1, lags: [0]}
+  - {file: models/final_demean/dm_unlag_s2.pt, seed: 2, lags: [0]}
+  - {file: models/final_demean/dm_lags_s0.pt, seed: 0, lags: [0, 7, 14, 30]}
+  - {file: models/final_demean/dm_lags_s1.pt, seed: 1, lags: [0, 7, 14, 30]}
+  - {file: models/final_demean/dm_lags_s2.pt, seed: 2, lags: [0, 7, 14, 30]}
+statistics: {anomaly_std: models/final/input_anom_stats.json, demeaned_sla_std: models/final_demean/input_anom_stats_demean.json}
+pre_registration: [configs/preregistration_demean.md, configs/preregistration_demean_addendum.md]
+validation_pooled_rmse_deep_set_C: {single_unets: "0.680-0.688", ens_unlagged: 0.6750, ens_lagged: 0.6738, ens_all6: 0.6677, frozen_model_ens_all6: 0.6504}
+validation_cost_vs_frozen_by_depth_C: "0.005 at 0 m, 0.048 at 100 m, 0.000 at 500 m"

@@ -1,0 +1,4 @@
+# Baseline: a single U-Net (SST + SLA anomaly, no lags, seed 0) = member 0 of the frozen ensemble 1
+pipeline: anom
+members:
+  - file: models/final/anom_sst_sla.pt

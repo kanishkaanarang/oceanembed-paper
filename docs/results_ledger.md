@@ -31,3 +31,12 @@ Validation (GLORYS): frozen 0.6504, demeaned 0.6677, linear 0.6735, XGBoost 0.66
 - "reproduces GLORYS with RMSE X on a held-out period"; "agrees with Argo profiles with RMSE Y"; ensemble beats linear at 50-200 m (GLORYS) and 75-200 m (Argo) with intervals excluding zero.
 ## Forbidden claims
 - first / novel / state of the art; "validated against two independent datasets"; real-time claims; skill below 300 m; "demeaning removes the drift" (bias changes sign; pattern error unchanged).
+
+## Regional and seasonal (vs GLORYS, deep set; regions fixed before test: ArabianSea 45-78E 5-30N, BayOfBengal 80-92E 5-23N, Andaman 92-100E 5-16N, Other = rest; cells 5984/2431/534/191)
+Source: results/scoring/regions_*_daily.csv, regions_seasons_bootstrap.csv. Regional scoring opened once per test period at commit a4f2c3f (third read of test targets, added output only, no model change).
+- Frozen vs linear, all depths: BayOfBengal -5.6% [-8.7,-2.4] (test_a), -3.8% [-5.1,-2.6] (test_b); ArabianSea -0.5% [-1.8,+0.7] n.s. (a), -1.9% [-2.8,-1.0] (b); Andaman +0.6% [-2.4,+4.2] n.s. (a), -3.4% [-5.9,-0.6] (b), at 50-200 m n.s. in both (+2.0% [-1.3,+6.4]; -2.4% [-5.3,+1.1]); Other (191 cells) -6.1% and -3.4%.
+- Validation Andaman advantage (-12.5%) did NOT replicate on test. Bay of Bengal is the only region with a clear gain in all three periods.
+- Demeaned vs frozen vs GLORYS: worse in every region (all significant in test_b; BayOfBengal and Other n.s. in test_a).
+- Seasons (test_b only), frozen vs linear: DJF -3.7% [-5.7,-2.2]; MAM -3.5% [-5.6,-1.4]; JJA -0.9% [-2.0,+0.1] n.s.; SON -1.8% [-2.9,-0.9]. test_a seasonal intervals are NaN by construction (each season is one ~3-month stretch): do not use them.
+- Argo profiles per region (unique day,lat,lon, common set): validation AS 6657 / BoB 2105 / Andaman 156 / Other 79; test_a AS 1992 / BoB 1412 / Andaman 92 / Other 139; test_b AS 7821 / BoB 2886 / Andaman 8 / Other 6.
+- Claim limits: no Argo verification of Andaman skill in test_b (8 profiles); no claim that the model "works best" anywhere except where intervals exclude zero in both periods (Bay of Bengal); seasonal gain absent in JJA, mechanism untested.

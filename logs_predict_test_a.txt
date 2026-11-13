@@ -1,0 +1,10 @@
+frozen test_a days: 483 2020-03-02 to 2021-06-27
+predicted days: 8
+predicted days: 208
+predicted days: 408
+saved data/processed/pred_frozen_test_a.npy (483, 15, 101, 241)
+demean test_a days: 483 2020-03-02 to 2021-06-27
+predicted days: 8
+predicted days: 208
+predicted days: 408
+saved data/processed/pred_demean_test_a.npy (483, 15, 101, 241)

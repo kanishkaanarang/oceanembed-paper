@@ -1,0 +1,22 @@
+frozen test_b days: 1614 2021-08-01 to 2025-12-31
+predicted days: 8
+predicted days: 208
+predicted days: 408
+predicted days: 608
+predicted days: 808
+predicted days: 1008
+predicted days: 1208
+predicted days: 1408
+predicted days: 1608
+saved data/processed/pred_frozen_test_b.npy (1614, 15, 101, 241)
+demean test_b days: 1614 2021-08-01 to 2025-12-31
+predicted days: 8
+predicted days: 208
+predicted days: 408
+predicted days: 608
+predicted days: 808
+predicted days: 1008
+predicted days: 1208
+predicted days: 1408
+predicted days: 1608
+saved data/processed/pred_demean_test_b.npy (1614, 15, 101, 241)

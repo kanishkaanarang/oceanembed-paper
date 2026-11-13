@@ -1,0 +1,10 @@
+linear fitted (43 s)
+xgboost fitted (62 s)
+validation days: 8
+validation days: 208
+validation days: 408
+validation days: 608
+saved validation ['data/processed/pred_lin_validation.npy', 'data/processed/pred_xgb_validation.npy', 'data/processed/pred_unet0_validation.npy']
+CHECK lin    pooled deep RMSE: 0.6735   (validation csv: 0.6735)
+CHECK xgb    pooled deep RMSE: 0.6697   (validation csv: 0.6697)
+CHECK unet0  pooled deep RMSE: 0.6679   (validation csv: 0.6679)

@@ -1,0 +1,16 @@
+linear fitted (42 s)
+xgboost fitted (62 s)
+test_a days: 8
+test_a days: 208
+test_a days: 408
+saved test_a ['data/processed/pred_lin_test_a.npy', 'data/processed/pred_xgb_test_a.npy', 'data/processed/pred_unet0_test_a.npy']
+test_b days: 8
+test_b days: 208
+test_b days: 408
+test_b days: 608
+test_b days: 808
+test_b days: 1008
+test_b days: 1208
+test_b days: 1408
+test_b days: 1608
+saved test_b ['data/processed/pred_lin_test_b.npy', 'data/processed/pred_xgb_test_b.npy', 'data/processed/pred_unet0_test_b.npy']

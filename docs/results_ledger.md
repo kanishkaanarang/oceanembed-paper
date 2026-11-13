@@ -40,3 +40,10 @@ Source: results/scoring/regions_*_daily.csv, regions_seasons_bootstrap.csv. Regi
 - Seasons (test_b only), frozen vs linear: DJF -3.7% [-5.7,-2.2]; MAM -3.5% [-5.6,-1.4]; JJA -0.9% [-2.0,+0.1] n.s.; SON -1.8% [-2.9,-0.9]. test_a seasonal intervals are NaN by construction (each season is one ~3-month stretch): do not use them.
 - Argo profiles per region (unique day,lat,lon, common set): validation AS 6657 / BoB 2105 / Andaman 156 / Other 79; test_a AS 1992 / BoB 1412 / Andaman 92 / Other 139; test_b AS 7821 / BoB 2886 / Andaman 8 / Other 6.
 - Claim limits: no Argo verification of Andaman skill in test_b (8 profiles); no claim that the model "works best" anywhere except where intervals exclude zero in both periods (Bay of Bengal); seasonal gain absent in JJA, mechanism untested.
+
+## Input attribution (Integrated Gradients; scripts/integrated_gradients.py, results/ig_validation_by_depth.csv)
+Setup: 19 VALIDATION days (every 40th), all six members of each ensemble, 12 midpoint steps, baseline = zero anomaly channels (land mask kept), target per depth = sum over deep-set cells of squared predicted anomaly; summary = share of absolute attribution summed over pixels. Completeness: median relative error 0.001, 90th percentile 0.004.
+- Frozen ensemble: SST share 0.632 (0 m), 0.595 (20 m), 0.497 (30 m), 0.278 (50 m), 0.186 (100 m), 0.164 (150 m); SLA share 0.722 at 50 m, 0.836 at 150 m, 0.675-0.762 at 500-1000 m.
+- Lag shares (lagged members): lag 0 about 0.45-0.55, lag 7 about 0.19, lag 14 about 0.13, lag 30 about 0.14.
+- Demeaned ensemble: similar; slightly more SST near the surface (0.664 at 0 m) and more lag-30 weight at 20-50 m (0.178-0.194 vs 0.137-0.149).
+- Claim limits: attribution is reliance, not causation or correctness; high SLA share at 500-1000 m does NOT imply skill there; sample of 19 days, domain-level sums only.

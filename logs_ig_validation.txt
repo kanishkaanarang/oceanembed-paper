@@ -1,0 +1,79 @@
+frozen validation days sampled: 19
+frozen day 1 of 19 (5 s)
+frozen day 2 of 19 (8 s)
+frozen day 3 of 19 (12 s)
+frozen day 4 of 19 (15 s)
+frozen day 5 of 19 (19 s)
+frozen day 6 of 19 (22 s)
+frozen day 7 of 19 (26 s)
+frozen day 8 of 19 (29 s)
+frozen day 9 of 19 (33 s)
+frozen day 10 of 19 (36 s)
+frozen day 11 of 19 (40 s)
+frozen day 12 of 19 (43 s)
+frozen day 13 of 19 (47 s)
+frozen day 14 of 19 (50 s)
+frozen day 15 of 19 (54 s)
+frozen day 16 of 19 (57 s)
+frozen day 17 of 19 (61 s)
+frozen day 18 of 19 (64 s)
+frozen day 19 of 19 (68 s)
+frozen completeness: median relative error 0.001, 90th percentile 0.004
+
+frozen: share of absolute attribution (all six members), and by lag (lagged members only)
+ depth_m  share_sst  share_sla  lag0  lag7  lag14  lag30
+       0      0.632      0.368 0.512 0.229  0.126  0.133
+       5      0.634      0.366 0.503 0.233  0.135  0.129
+      10      0.632      0.368 0.497 0.236  0.137  0.130
+      20      0.595      0.405 0.490 0.227  0.146  0.137
+      30      0.497      0.503 0.486 0.211  0.154  0.149
+      50      0.278      0.722 0.524 0.193  0.138  0.144
+      75      0.198      0.802 0.529 0.194  0.131  0.146
+     100      0.186      0.814 0.532 0.193  0.129  0.146
+     125      0.174      0.826 0.542 0.192  0.123  0.142
+     150      0.164      0.836 0.552 0.192  0.120  0.137
+     200      0.170      0.830 0.548 0.194  0.122  0.136
+     300      0.183      0.817 0.535 0.193  0.129  0.143
+     500      0.238      0.762 0.504 0.195  0.139  0.163
+     700      0.260      0.740 0.518 0.193  0.133  0.156
+    1000      0.325      0.675 0.454 0.188  0.165  0.193
+demean validation days sampled: 19
+demean day 1 of 19 (71 s)
+demean day 2 of 19 (75 s)
+demean day 3 of 19 (79 s)
+demean day 4 of 19 (82 s)
+demean day 5 of 19 (86 s)
+demean day 6 of 19 (90 s)
+demean day 7 of 19 (94 s)
+demean day 8 of 19 (97 s)
+demean day 9 of 19 (101 s)
+demean day 10 of 19 (105 s)
+demean day 11 of 19 (108 s)
+demean day 12 of 19 (112 s)
+demean day 13 of 19 (115 s)
+demean day 14 of 19 (119 s)
+demean day 15 of 19 (122 s)
+demean day 16 of 19 (126 s)
+demean day 17 of 19 (129 s)
+demean day 18 of 19 (133 s)
+demean day 19 of 19 (137 s)
+demean completeness: median relative error 0.001, 90th percentile 0.004
+
+demean: share of absolute attribution (all six members), and by lag (lagged members only)
+ depth_m  share_sst  share_sla  lag0  lag7  lag14  lag30
+       0      0.664      0.336 0.476 0.230  0.138  0.156
+       5      0.657      0.343 0.476 0.229  0.136  0.159
+      10      0.650      0.350 0.469 0.226  0.140  0.165
+      20      0.610      0.390 0.451 0.220  0.150  0.178
+      30      0.525      0.475 0.441 0.209  0.157  0.194
+      50      0.300      0.700 0.468 0.193  0.151  0.187
+      75      0.217      0.783 0.498 0.190  0.144  0.168
+     100      0.203      0.797 0.509 0.188  0.140  0.163
+     125      0.200      0.800 0.518 0.187  0.135  0.160
+     150      0.191      0.809 0.525 0.186  0.133  0.156
+     200      0.188      0.812 0.530 0.184  0.132  0.153
+     300      0.222      0.778 0.520 0.186  0.136  0.158
+     500      0.305      0.695 0.490 0.199  0.148  0.163
+     700      0.281      0.719 0.487 0.188  0.151  0.174
+    1000      0.322      0.678 0.466 0.193  0.160  0.181
+saved results/ig_validation_by_depth.csv

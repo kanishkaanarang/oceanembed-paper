@@ -51,6 +51,7 @@ for m, a in pred.items():
 shelf = D.mask & ~D.deep[None]
 SEAS = ["DJF", "MAM", "JJA", "SON"]
 acc = defaultdict(lambda: np.zeros((3, 15)))
+daily = []
 for i, d in enumerate(days):
     g = D.glorys(d).astype(np.float64)
     key = (d.year, SEAS[(d.month % 12) // 3])
@@ -59,6 +60,7 @@ for i, d in enumerate(days):
         e = p.astype(np.float64) - g
         ed = e[:, D.deep]
         acc[("deep", m) + key] += np.stack([(ed ** 2).sum(1), ed.sum(1), np.full(15, ed.shape[1], float)])
+        daily.append((d.date().isoformat(), m, *(ed ** 2).sum(1)))
         if m != "xgb":
             es = np.where(shelf, e, 0.0)
             acc[("shelf", m) + key] += np.stack([(es ** 2).sum((1, 2)), es.sum((1, 2)), shelf.sum((1, 2)).astype(float)])
@@ -67,6 +69,7 @@ for i, d in enumerate(days):
 rows = [(*k[:2], *k[2:], int(z), *v[:, j]) for k, v in acc.items() for j, z in enumerate(TARGET_DEPTHS.astype(int))]
 df = pd.DataFrame(rows, columns=["set", "model", "year", "season", "depth_m", "sse", "bias_sum", "n"])
 df.to_csv(sums_out, index=False)
+pd.DataFrame(daily, columns=["date", "model"] + [f"sse_{z}" for z in TARGET_DEPTHS.astype(int)]).to_csv(sums_out.replace("_sums", "_daily"), index=False)
 print("saved", sums_out, "commit", commit)
 
 for st in ("deep", "shelf"):

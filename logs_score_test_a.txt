@@ -1,0 +1,57 @@
+scored days: 1 of 483
+scored days: 101 of 483
+scored days: 201 of 483
+scored days: 301 of 483
+scored days: 401 of 483
+saved results/scoring/test_a_sums.csv commit a167e6a
+
+=== test_a | deep set | pooled over 15 depths ===
+  clim    RMSE 0.9689 C   skill vs climatology +0.000
+  lin     RMSE 0.6835 C   skill vs climatology +0.502
+  xgb     RMSE 0.6823 C   skill vs climatology +0.504
+  unet0   RMSE 0.6895 C   skill vs climatology +0.494
+  frozen  RMSE 0.6712 C   skill vs climatology +0.520
+  demean  RMSE 0.7433 C   skill vs climatology +0.412
+RMSE by depth (C):
+model     clim    lin    xgb  unet0  frozen  demean
+depth_m                                            
+0        0.632  0.387  0.403  0.425   0.405   0.379
+5        0.618  0.389  0.405  0.432   0.407   0.378
+10       0.624  0.401  0.417  0.438   0.417   0.391
+20       0.672  0.472  0.483  0.514   0.485   0.463
+30       0.763  0.587  0.579  0.613   0.593   0.585
+50       0.991  0.790  0.750  0.788   0.770   0.798
+75       1.339  0.993  0.964  0.963   0.937   1.026
+100      1.621  1.072  1.076  1.062   1.035   1.222
+125      1.640  1.060  1.067  1.070   1.042   1.254
+150      1.453  0.975  0.982  0.978   0.957   1.118
+200      0.973  0.720  0.728  0.729   0.711   0.787
+300      0.546  0.485  0.488  0.491   0.484   0.508
+500      0.360  0.334  0.336  0.332   0.330   0.348
+700      0.374  0.357  0.359  0.352   0.354   0.364
+1000     0.399  0.392  0.395  0.387   0.387   0.392
+
+=== test_a | shelf set | pooled over 15 depths ===
+  clim    RMSE 1.0987 C   skill vs climatology +0.000
+  lin     RMSE 0.8277 C   skill vs climatology +0.433
+  unet0   RMSE 0.8449 C   skill vs climatology +0.409
+  frozen  RMSE 0.8328 C   skill vs climatology +0.426
+  demean  RMSE 0.9386 C   skill vs climatology +0.270
+RMSE by depth (C):
+model     clim    lin  unet0  frozen  demean
+depth_m                                     
+0        0.859  0.599  0.587   0.579   0.595
+5        0.864  0.613  0.604   0.593   0.612
+10       0.843  0.596  0.591   0.573   0.593
+20       0.923  0.715  0.714   0.688   0.714
+30       1.025  0.831  0.834   0.803   0.842
+50       1.178  0.977  0.971   0.944   1.012
+75       1.426  1.086  1.084   1.059   1.189
+100      1.618  1.084  1.150   1.140   1.398
+125      1.679  1.145  1.243   1.243   1.495
+150      1.478  1.107  1.138   1.136   1.326
+200      0.952  0.807  0.812   0.803   0.897
+300      0.644  0.617  0.620   0.611   0.643
+500      0.477  0.464  0.456   0.455   0.471
+700      0.458  0.454  0.447   0.446   0.455
+1000       NaN    NaN    NaN     NaN     NaN

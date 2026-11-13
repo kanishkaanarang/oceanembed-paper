@@ -4,3 +4,5 @@
 2026-11-13T18:40:21,test_a,2bba7f3,rerun=True,results/scoring/test_a_sums_rerun_2026-11-13T184021.csv
 2026-11-13T18:56:50,argo_test_a,f43d1ea,rerun=False,argo_test_a
 2026-11-13T18:56:50,argo_test_b,f43d1ea,rerun=False,argo_test_b
+2026-11-14T02:14:17,regions_test_a,a4f2c3f,rerun=False,regions_test_a_daily.csv
+2026-11-14T02:14:17,regions_test_b,a4f2c3f,rerun=False,regions_test_b_daily.csv

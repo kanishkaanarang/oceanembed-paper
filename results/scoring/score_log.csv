@@ -2,3 +2,5 @@
 2026-11-12T18:03:05,test_a,a167e6a,rerun=False,results/scoring/test_a_sums.csv
 2026-11-13T18:34:59,test_b,ee00032,rerun=False,results/scoring/test_b_sums.csv
 2026-11-13T18:40:21,test_a,2bba7f3,rerun=True,results/scoring/test_a_sums_rerun_2026-11-13T184021.csv
+2026-11-13T18:56:50,argo_test_a,f43d1ea,rerun=False,argo_test_a
+2026-11-13T18:56:50,argo_test_b,f43d1ea,rerun=False,argo_test_b

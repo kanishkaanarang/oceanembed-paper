@@ -1,0 +1,38 @@
+% Data and Method sections (draft 14 Nov 2026). Numbers come from configs/*.yaml, scripts/train_variant.py, scripts/*baseline*.py
+% and docs/results_ledger.md. Items marked [FILL] and every \cite key marked TODO must be completed and verified by the author.
+
+\section{Data}
+\label{sec:data}
+All fields are placed on a daily $0.25^\circ$ grid covering $45$--$105^\circ$E and $5$--$30^\circ$N ($101\times241$ cells) from 4 February 2010 to 31 December 2025 (Table~\ref{tab:data}). The target is potential temperature from the GLORYS12V1 ocean reanalysis \cite{glorys12}, sampled at the grid points and interpolated linearly in depth to 15 levels (0, 5, 10, 20, 30, 50, 75, 100, 125, 150, 200, 300, 500, 700 and 1000~m). The 0~m value uses the shallowest native level (0.494~m), and nothing is filled or extrapolated below the seafloor. The inputs are the OSTIA reprocessed sea surface temperature (SST) \cite{ostia}, averaged from $0.05^\circ$, and the multi-mission DUACS sea level anomaly (SLA) \cite{duacs}, averaged from $0.125^\circ$. Hourly winds were tested and added nothing on the validation window; a salinity input was not adopted. Neither is used. Of the 12{,}038 ocean cells, 9{,}140 have values at all 15 depths (the \emph{deep set}); headline metrics use this set and the remaining shelf cells are reported separately.
+
+\begin{table}[t]
+\centering
+\caption{Data products (all from Copernicus Marine except Argo).}
+\label{tab:data}
+\begin{tabular}{@{}lll@{}}
+\hline
+Role & Product & Native grid \\
+\hline
+Target & GLORYS12V1 potential temperature & $1/12^\circ$, 50 levels \\
+Input & OSTIA reprocessed SST (v202003) & $0.05^\circ$ \\
+Input & DUACS all-satellite SLA (v202411) & $0.125^\circ$ \\
+Check & Argo profiles, delayed-mode and adjusted & profiles \\
+\hline
+\end{tabular}
+\end{table}
+
+\emph{Evaluation protocol.} The data are split chronologically with gaps of at least 30 days: training 2010-02-04 to 2017-12-31, validation 2018-02-01 to 2020-01-31, Test~A 2020-03-02 to 2021-06-27 and Test~B 2021-08-01 to 2025-12-31. The split was fixed before any model was trained. From July 2021 GLORYS is produced in an interim mode that assimilates near-real-time observations \textbf{[FILL: product ID of the interim production used for Test~B]}; Test~B is therefore reported separately and Test~A is the headline. Normalisation, climatology and all model fitting use training days only, and model selection uses the validation window only. Both ensembles and all baselines were frozen before any test period was opened, and each test period was scored under a lock that records the code version.
+
+\emph{Argo.} Delayed-mode and adjusted Argo profiles \textbf{[FILL: Argo GDAC access date and DOI]} are compared profile by profile: each observation is matched to the nearest $0.25^\circ$ cell and day, converted to potential temperature (practical to absolute salinity and in situ to potential temperature with the TEOS-10 toolbox \cite{teos10}), and the models and GLORYS are read at the same cell, day and depth. Argo data are assimilated by GLORYS, so this comparison is not independent of the target.
+
+\section{Method}
+\label{sec:method}
+\emph{Anomaly formulation.} Each input, and the target at each cell and depth, is expressed as an anomaly relative to a three-harmonic seasonal cycle fitted on the training days. Input anomalies are divided by a training standard deviation. The network predicts the target anomaly (scaled by 2), and the temperature estimate is this anomaly added to the target climatology. A seasonal climatology therefore corresponds to a zero anomaly.
+
+\emph{Network.} We use a small U-Net \cite{unet} (width 32, two down-sampling steps, GroupNorm, GELU; about $0.47$ million parameters) that maps the input stack to 15 anomaly maps. The input has either 3 channels (same-day SST and SLA anomalies and an ocean mask) or 9 channels (SST and SLA anomalies at lags of 0, 7, 14 and 30 days and the mask). The loss is the mean squared error over valid ocean entries. Training uses AdamW (learning rate $10^{-3}$, weight decay $10^{-4}$), cosine annealing over at most 25 epochs, batch size 8, every second training day (1{,}444 days) and early stopping on the validation loss (patience 6).
+
+\emph{Ensembles.} The \emph{frozen ensemble} averages six U-Nets in anomaly space: three seeds with same-day inputs and three with lagged inputs. The \emph{demeaned ensemble} has the same composition, but the daily mean of SLA over the deep-set cells is removed from every SLA channel before standardisation, so that a uniform sea level offset (for example a long-term rise) carries no thermocline information. This is a same-day operation and uses no future information. The demeaned ensemble was pre-registered as co-primary before any test period was opened, and both are always reported.
+
+\emph{Baselines.} (i)~The seasonal climatology. (ii)~A per-cell, per-depth linear regression of the temperature anomaly on the SLA and SST anomalies, fitted in closed form on the training days. (iii)~Gradient-boosted trees (XGBoost \cite{xgboost}), one model per depth, with SST and SLA anomalies, latitude, longitude and the sine and cosine of the day of year as features, fitted with fixed settings on every tenth training day and 1{,}500 random deep-set cells per day (300 trees, learning rate 0.05, depth 6, minimum child weight 20, subsample 0.8); it is evaluated on the deep set only. (iv)~A single U-Net with same-day inputs (seed 0).
+
+\emph{Metrics and uncertainty.} We report RMSE and skill, $1-\mathrm{MSE}_{\mathrm{model}}/\mathrm{MSE}_{\mathrm{clim}}$, pooled over depths as the mean of the per-depth MSE, and by depth, region and season. Confidence intervals for RMSE differences use a moving-block bootstrap over days (30-day blocks, 2000 resamples); they reflect day-sampling variability, not training randomness. Input attribution uses Integrated Gradients \cite{ig} with a zero-anomaly baseline and 12 steps, on 19 validation days.

@@ -47,3 +47,9 @@ Setup: 19 VALIDATION days (every 40th), all six members of each ensemble, 12 mid
 - Lag shares (lagged members): lag 0 about 0.45-0.55, lag 7 about 0.19, lag 14 about 0.13, lag 30 about 0.14.
 - Demeaned ensemble: similar; slightly more SST near the surface (0.664 at 0 m) and more lag-30 weight at 20-50 m (0.178-0.194 vs 0.137-0.149).
 - Claim limits: attribution is reliance, not causation or correctness; high SLA share at 500-1000 m does NOT imply skill there; sample of 19 days, domain-level sums only.
+
+## Per-depth gain over linear (vs GLORYS, deep set; frozen ensemble vs linear; results/scoring/depth_profile_ci.csv; results/figures/fig_rmse_by_depth)
+Block bootstrap (30-day blocks, 2000 resamples), RMSE change in %, 95% interval.
+- test_a: WORSE than linear at 0 m +4.8% [+1.0,+8.3], 5 m +4.5% [+0.6,+8.3], 10 m +3.9% [+0.04,+7.5]; n.s. at 20-30 m; better at 50 m -2.4% [-3.8,-0.5], 75 m -5.6% [-6.8,-4.5], 100 m -3.4% [-5.3,-1.5], 125 m -1.7% [-3.1,-0.01], 150 m -1.8% [-3.2,-0.7]; n.s. at 200 and 300 m; 500-1000 m -1.0 to -1.4%.
+- test_b: WORSE than linear at 0 m +3.3% [+1.1,+5.4], 5 m +2.7% [+0.3,+4.8], 10 m +2.7% [+0.5,+4.6]; n.s. at 20-30 m; better at 50 m -4.1%, 75 m -2.9%, 100 m -1.8%, 125 m -3.9%, 150 m -4.1%, 200 m -3.2% (all exclude 0); 300 m -0.6% (borderline), 500 m -2.1%, 700 m -1.4%, 1000 m -1.3%.
+- Claim limits: significantly worse than linear at 0-10 m in BOTH periods (2.7-4.8% of RMSE, <= 0.02 C); the pooled 0-30 m "tie" hid this. Gain is concentrated at 50-200 m. Gains at 500-1000 m are significant but <= 0.01 C: do not present as skill.

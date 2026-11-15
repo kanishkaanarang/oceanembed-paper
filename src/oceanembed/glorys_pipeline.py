@@ -30,6 +30,8 @@ MASK_PATH = "data/processed/target_mask_15depths.npy"
 
 
 def block_dates(block):
+    if block == 6:  # test_c, pre-registered in configs/preregistration_test_c.md (inside block 5's time chunk)
+        return pd.Timestamp("2026-01-01"), pd.Timestamp("2026-05-15")
     start = T0 + pd.Timedelta(days=block * TBLOCK)
     end = min(start + pd.Timedelta(days=TBLOCK - 1), LAST_DAY)
     if end < start:

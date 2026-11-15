@@ -14,7 +14,7 @@ from oceanembed.model_sets import ModelSet, device
 SET, PERIOD = sys.argv[1], sys.argv[2]
 CFG = {"frozen": "configs/final_model.yaml", "demean": "configs/final_model_demean.yaml"}[SET]
 EXPECT = {"frozen": 0.6504, "demean": 0.6677}[SET]
-assert PERIOD in ("validation", "test_a", "test_b")
+assert PERIOD in ("validation", "test_a", "test_b", "test_c")
 OUT = f"data/processed/pred_{SET}_{PERIOD}.npy"
 if os.path.exists(OUT):
     raise SystemExit(f"EXISTS: {OUT} (stop)")

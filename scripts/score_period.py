@@ -17,7 +17,7 @@ from oceanembed.dataset_anom import AnomData
 from oceanembed.glorys import TARGET_DEPTHS
 
 PERIOD = sys.argv[1]
-assert PERIOD in ("validation", "test_a", "test_b")
+assert PERIOD in ("validation", "test_a", "test_b", "test_c")
 os.makedirs("results/scoring", exist_ok=True)
 commit = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"], text=True).strip()
 dirty = subprocess.check_output(["git", "status", "--porcelain", "--untracked-files=no"], text=True).strip()

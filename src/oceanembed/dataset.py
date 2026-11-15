@@ -28,6 +28,20 @@ def design(days):
     return np.stack(cols, axis=1)
 
 
+class _Cat:
+    """Read-only view: the old array for index < n, an extension array beyond (day index on axis 0)."""
+
+    def __init__(self, old, new):
+        self.old, self.new, self.n = old, new, old.shape[0]
+        self.shape = (old.shape[0] + new.shape[0],) + tuple(old.shape[1:])
+
+    def __getitem__(self, key):
+        i, rest = (key[0], key[1:]) if isinstance(key, tuple) else (key, ())
+        i = int(i)
+        a = self.old[i] if i < self.n else self.new[i - self.n]
+        return a[rest] if rest else a
+
+
 class Data:
     def __init__(self):
         self.cfg = yaml.safe_load(open("configs/splits.yaml"))
@@ -47,6 +61,22 @@ class Data:
             self.blocks.append((s, e, a))
         self.beta = None
         self.norm = None
+        if os.environ.get("OCEANEMBED_TEST_C") == "1":
+            self.attach_test_c()
+
+    def attach_test_c(self):
+        """Append the 2026 arrays (test_c, pre-registered in configs/preregistration_test_c.md) behind the old ones.
+        Only active when OCEANEMBED_TEST_C=1; without it the object is unchanged."""
+        n_new = 135
+        sst = np.load("data/processed/sst_test_c.npy", mmap_mode="r")
+        sla = np.load("data/processed/ssh_test_c.npy", mmap_mode="r")
+        assert sst.shape == sla.shape == (n_new, 101, 241), (sst.shape, sla.shape)
+        wind = np.full((n_new, 2, 101, 241), np.nan, dtype=np.float32)  # not downloaded for 2026; frozen models do not use wind
+        self.sst, self.sla, self.wind = _Cat(self.sst, sst), _Cat(self.sla, sla), _Cat(self.wind, wind)
+        s, e = block_dates(6)
+        g = np.load("data/processed/glorys_block6.npy", mmap_mode="r")
+        assert g.shape[0] == (e - s).days + 1, g.shape
+        self.blocks.append((s, e, g))
 
     def period(self, name, stride=1):
         if name not in ("train", "validation"):

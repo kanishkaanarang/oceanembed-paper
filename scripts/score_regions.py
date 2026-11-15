@@ -16,7 +16,7 @@ from oceanembed.dataset_anom import AnomData
 from oceanembed.glorys import TARGET_DEPTHS
 
 PERIODS = sys.argv[1:]
-assert PERIODS and all(p in ("validation", "test_a", "test_b") for p in PERIODS)
+assert PERIODS and all(p in ("validation", "test_a", "test_b", "test_c") for p in PERIODS)
 MODELS = ["clim", "lin", "xgb", "unet0", "frozen", "demean"]
 commit = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"], text=True).strip()
 dirty = subprocess.check_output(["git", "status", "--porcelain", "--untracked-files=no"], text=True).strip()

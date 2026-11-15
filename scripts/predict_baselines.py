@@ -17,7 +17,7 @@ from oceanembed.glorys import TARGET_DEPTHS
 from oceanembed.model_sets import ModelSet, device
 
 PERIODS = sys.argv[1:]
-assert PERIODS and all(p in ("validation", "test_a", "test_b") for p in PERIODS)
+assert PERIODS and all(p in ("validation", "test_a", "test_b", "test_c") for p in PERIODS)
 NAMES = ["lin", "xgb", "unet0"]
 OUT = {(n, p): f"data/processed/pred_{n}_{p}.npy" for n in NAMES for p in PERIODS}
 ex = [f for f in OUT.values() if os.path.exists(f)]

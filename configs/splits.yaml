@@ -8,3 +8,4 @@ validation: ["2018-02-01", "2020-01-31"]
 test_a:     ["2020-03-02", "2021-06-27"]   # latest data of the delayed-time reanalysis
 test_b:     ["2021-08-01", "END"]          # interim-production target; END = last date available in ALL inputs
 # test_c = 2026-01-01 .. 2026-05-15 (prospective, pre-registered 2026-11-15 in configs/preregistration_test_c.md; not yet wired into the loader; locked)
+test_c:     ["2026-01-01", "2026-05-15"]   # prospective, pre-registered 2026-11-15 (configs/preregistration_test_c.md); run with OCEANEMBED_TEST_C=1

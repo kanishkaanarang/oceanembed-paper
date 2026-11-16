@@ -7,3 +7,4 @@
 2026-11-14T02:14:17,regions_test_a,a4f2c3f,rerun=False,regions_test_a_daily.csv
 2026-11-14T02:14:17,regions_test_b,a4f2c3f,rerun=False,regions_test_b_daily.csv
 2026-11-16T17:21:48,test_c,3f2506b,rerun=False,results/scoring/test_c_sums.csv
+2026-11-16T17:28:33,argo_test_c,25300fc,rerun=False,argo_test_c

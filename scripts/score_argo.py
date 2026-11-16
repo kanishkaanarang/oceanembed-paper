@@ -35,6 +35,8 @@ D.fit_input_clim()
 splits = yaml.safe_load(open("configs/splits.yaml"))
 rmse = lambda x: float(np.sqrt(np.mean(np.square(x))))
 raw = pd.read_csv("data/processed/argo_vs_glorys.csv.gz", parse_dates=["day"])
+if os.path.exists("data/processed/argo_vs_glorys_test_c.csv.gz"):  # 2026 months, built separately so older rows stay untouched
+    raw = pd.concat([raw, pd.read_csv("data/processed/argo_vs_glorys_test_c.csv.gz", parse_dates=["day"])], ignore_index=True)
 
 
 def table(g):

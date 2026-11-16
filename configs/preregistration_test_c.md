@@ -31,3 +31,9 @@ Deep set (9,140 cells), pooled and per depth, vs GLORYS and vs Argo: RMSE, bias,
 - Winter to pre-monsoon only; no monsoon months.
 - Argo is assimilated by GLORYS and is not independent of the target.
 - The 2026 data existed in the world before the models were frozen; the claim is that this repository had not downloaded or opened it. File timestamps and this commit's date document that.
+
+## Log (appended after the pre-registration; the predictions above are unchanged)
+- 2026-11-16 17:28 IST: first Argo scoring invocation (commit 25300fc) returned 0 rows because data/processed/argo_vs_glorys.csv.gz was built before the 2026 months existed. No Argo comparison number was produced or seen. Fix: scripts/argo_vs_glorys_test_c.py builds the 2026 pairs into a separate file (argo_vs_glorys_test_c.csv.gz); score_argo.py appends it when present, so no older row changes. Scoring is rerun with RERUN=1 (logged in results/scoring/score_log.csv).
+- Deviation from rule 1: downloads went to new monthly files in the existing interim folders (data/interim/surface/ssh/2026-*.npz, data/interim/sst/2026-*.npz, data/interim/glorys/block6/, data/interim/argo/argo_2026-*.pkl.gz), not to data/interim/test_c. No existing file was modified. Assembled arrays are data/processed/*_test_c.npy as planned.
+- DUACS May 2026 is a partial month (to 15 May); it was fetched with scripts/run_surface_partial.py with the same checks as the monthly pipeline.
+- Argo for test_c: of 1,633 profiles in the window, 507 are delayed-mode or adjusted (D 204, A 303) and kept by the scorer; 1,126 are real-time (R) and dropped, as in earlier periods.

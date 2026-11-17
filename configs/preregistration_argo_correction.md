@@ -20,3 +20,8 @@
 
 ## Limits to state in the paper
 One additive constant per depth cannot correct patterns; Argo is assimilated by GLORYS, so a correction toward Argo moves away from the training target by construction; Argo in 2026 is thin (507 profiles); no uncertainty from the fit set (a single estimate of c_k).
+
+## Extension (added 17 Nov 2026 AFTER seeing the main results above; exploratory, not part of the pre-registration)
+- Main-analysis outcome: success rule met in all three periods; P1 held; P2 failed (corrected frozen matches the demeaned ensemble); P3 first clause held.
+- Reason for the extension: a per-depth constant can be applied to any estimate, so the fair question is whether the U-Net ensemble's advantage survives when every estimate is corrected the same way.
+- Method: identical rule (per-depth mean of model - Argo on validation D+A deep-set rows, no correction at 0 m) applied separately to linear, XGBoost, single U-Net, climatology and GLORYS; evaluation identical to the main analysis; compared pairs: corrected frozen vs corrected linear / XGBoost / single U-Net / GLORYS / climatology, and corrected linear vs linear, corrected GLORYS vs GLORYS. Reported as exploratory.

@@ -1,0 +1,21 @@
+\begin{table*}[t]
+\centering
+\caption{Pooled RMSE ($^\circ$C) on the deep set. Against GLORYS: mean of the per-depth MSE over 15 depths. Against Argo: all matched profile-depth values at 14 levels (5--1000~m), equally weighted ($48522$, $139583$ and $6895$ values in Tests~A, B and C; Test~C has 507 profiles). The two pooling rules are not comparable in magnitude. Corrected: one additive constant per depth, fitted on validation-window Argo only. Argo is assimilated by GLORYS and is not independent of it. Best learned model in bold per column.}
+\label{tab:main}
+\begin{tabular}{@{}lccccccccc@{}}
+\hline
+ & \multicolumn{3}{c}{vs GLORYS} & \multicolumn{3}{c}{vs Argo, raw} & \multicolumn{3}{c}{vs Argo, corrected} \\
+\cline{2-4}\cline{5-7}\cline{8-10}
+Model & A & B & C & A & B & C & A & B & C \\
+\hline
+Climatology & 0.969 & 1.068 & 0.906 & 1.009 & 1.106 & 0.817 & -- & -- & -- \\
+Linear (SLA+SST) & 0.683 & 0.746 & 0.670 & 0.861 & 0.932 & 0.831 & 0.782 & 0.869 & 0.697 \\
+XGBoost & 0.682 & 0.741 & 0.639 & 0.855 & 0.920 & 0.777 & 0.779 & 0.863 & 0.668 \\
+Single U-Net & 0.690 & 0.745 & 0.642 & 0.848 & 0.917 & 0.779 & 0.776 & 0.864 & 0.668 \\
+U-Net ensemble & \textbf{0.671} & \textbf{0.728} & \textbf{0.637} & 0.834 & 0.909 & 0.773 & \textbf{0.757} & \textbf{0.843} & \textbf{0.661} \\
+Ensemble, demeaned SLA & 0.743 & 0.810 & 0.705 & \textbf{0.754} & \textbf{0.848} & \textbf{0.649} & 0.791 & 0.879 & 0.698 \\
+\hline
+GLORYS12 & -- & -- & -- & 0.677 & 0.783 & 0.711 & 0.641 & 0.735 & 0.668 \\
+\hline
+\end{tabular}
+\end{table*}

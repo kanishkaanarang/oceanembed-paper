@@ -82,7 +82,7 @@ for key, name in LABEL:
 gl = ["GLORYS12", "--", "--", "--"] + ["%.3f" % A[p]["glorys"] for p in PER] + ["%.3f" % C[p]["glorys"] for p in PER]
 tex = r"""\begin{table*}[t]
 \centering
-\caption{Pooled RMSE ($^\circ$C) on the deep set. Against GLORYS: mean of the per-depth MSE over 15 depths. Against Argo: all matched profile-depth values at 14 levels (5--1000~m), equally weighted ($%d$, $%d$ and $%d$ values in Tests~A, B and C; Test~C has 507 profiles). The two pooling rules are not comparable in magnitude. Corrected: one additive constant per depth, fitted on validation-window Argo only. Argo is assimilated by GLORYS and is not independent of it. Best learned model in bold per column.}
+\caption{Pooled RMSE ($^\circ$C) on the deep set. Against GLORYS: mean of the per-depth MSE over 15 depths. Against Argo: all matched profile-depth values at 14 levels (5--1000~m), equally weighted ($%d$, $%d$ and $%d$ values in Tests~A, B and C; Test~C has 507 profiles). The two pooling rules are not comparable in magnitude. Corrected: one additive constant per depth, fitted on validation-window Argo only. Argo is assimilated by GLORYS and is not independent of it. In the corrected columns the GLORYS12 row is GLORYS12 with its own per-depth constants applied. Best learned model in bold per column (GLORYS12 and climatology excluded).}
 \label{tab:main}
 \begin{tabular}{@{}lccccccccc@{}}
 \hline

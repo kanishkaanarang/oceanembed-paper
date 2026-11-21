@@ -22,7 +22,7 @@ New Delhi, India\\
 \maketitle
 
 \begin{abstract}
-Satellite sea surface temperature and sea level can be used to estimate subsurface temperature, but how much a deep network adds over simple baselines, and how the answer depends on the reference, is rarely measured under a protocol fixed in advance. We train U-Net ensembles to reproduce the GLORYS12 reanalysis at 15 depths (0--1000~m) over the North Indian Ocean from satellite SST and sea level anomaly, and compare them with climatology, a per-cell linear regression and gradient-boosted trees on three test periods, the last prospective and pre-registered. Against GLORYS12 the ensemble improves on the linear regression in RMSE by 1.8, 2.4 and 4.9\%, at 50--200~m, is worse near the surface, and has no practical skill below 300~m. Against Argo profiles the ranking changes: an ensemble variant that is worst against GLORYS12 is the closest learned model, but one constant per depth, fitted on validation Argo, recovers essentially its advantage, so we read it as bias reduction. Intervals cover day-sampling variability only.
+Satellite sea surface temperature and sea level can be used to estimate subsurface temperature, but how much a deep network adds over simple baselines, and how the answer depends on the reference, is rarely measured under a protocol fixed in advance. We train U-Net ensembles to reproduce the GLORYS12 reanalysis at 15 depths (0--1000~m) over the North Indian Ocean from satellite SST and sea level anomaly, and compare them with climatology, a per-cell linear regression and gradient-boosted trees on three test periods, the last prospective and pre-registered. Against GLORYS12 the ensemble improves on the linear regression in RMSE by 1.8, 2.4 and 4.9\%, with the gain concentrated at 50--200~m; it is worse near the surface and has no practical skill below 300~m. Against Argo profiles the ranking changes: an ensemble variant that is worst against GLORYS12 is the closest learned model, but one constant per depth, fitted on validation Argo, recovers essentially its advantage, so we read it as bias reduction. Intervals cover day-sampling variability only.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -37,7 +37,7 @@ subsurface temperature, U-Net, sea level anomaly, GLORYS12, Argo, North Indian O
 
 \section{Conclusion}
 \label{sec:conclusion}
-Under a frozen protocol, a U-Net ensemble driven by satellite SST and sea level improves on a per-cell linear regression by 1.8 to 4.9\% against GLORYS12, in the thermocline only. The reference matters more: against Argo the ordering of two ensembles reverses, by 6.7 to 16.1\%, through a bias that one constant per depth largely reproduces. Estimates trained on a reanalysis should be checked against profiles, and gains reported with intervals. We claim neither real-time use nor skill below 300~m.
+Under a frozen protocol, a U-Net ensemble driven by satellite SST and sea level improves on a per-cell linear regression by 1.8 to 4.9\% against GLORYS12, mostly in the thermocline. The reference matters more: against Argo the ordering of two ensembles reverses, by 6.7 to 16.1\%, through a bias that one constant per depth largely reproduces. Estimates trained on a reanalysis should be checked against profiles, and gains reported with intervals. We claim neither real-time use nor skill below 300~m.
 
 \small
 \bibliographystyle{IEEEtranN}

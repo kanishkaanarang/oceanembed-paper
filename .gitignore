@@ -234,3 +234,4 @@ data/
 # Secrets
 .env
 *.netrc
+paper/*.zip

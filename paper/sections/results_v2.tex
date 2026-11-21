@@ -1,6 +1,5 @@
 % Results v2 (19 Nov 2026). Every number comes from docs/results_ledger.md or paper/tables/tab_main.tex (generated and
 % cross-checked by scripts/make_results_table.py). The old results.tex is kept for reference. Do not retype numbers from memory.
-% TODO before use: fig_rmse_by_depth currently shows Tests A and B only; regenerate with test_c (step 4 of the plan).
 
 \section{Results}
 \label{sec:results}
@@ -12,8 +11,8 @@ Against GLORYS, the frozen ensemble has a pooled deep-set RMSE of 0.671, 0.728 a
 
 \begin{figure*}[t]
 \centering
-\includegraphics[width=\textwidth]{figures/fig_rmse_by_depth.pdf}
-\caption{RMSE against GLORYS12 by depth on the deep set for Tests~A--C, and the RMSE change of the U-Net ensemble relative to the linear regression with 95\% block-bootstrap intervals (negative is better). The depth axis is a square-root scale.}
+\includegraphics[width=\textwidth]{figures/fig_rmse_by_depth_v2.pdf}
+\caption{(a)~RMSE against GLORYS12 by depth on the deep set for Test~A and (b)~for Test~C. (c)~RMSE change of the U-Net ensemble relative to the linear regression with 95\% block-bootstrap intervals for Tests~A, B and C (negative is better; Test~B is shown only here); points are offset vertically for legibility. The depth axis is a square-root scale.}
 \label{fig:depth}
 \end{figure*}
 
